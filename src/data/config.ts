@@ -31,8 +31,8 @@ export const siteConfig: SiteConfig = {
   sessionDuration: "60 Minutes",
   sessionPrice: "2,000",
   currency: "₹",
-  whatsappNumber: "919876543210", // Placeholder to be configured with client's actual WhatsApp
-  displayPhoneNumber: "+91 98765 43210",
+  whatsappNumber: "919969730416",
+  displayPhoneNumber: "+91 99697 30416",
   instagramUrl: "https://instagram.com/bespokehealer",
   facebookUrl: "https://facebook.com/bespokehealer",
   address: "Shop no.28, Link Rd, next to Sai Car Care, Shimpoli, Borivali West, Mumbai, Maharashtra 400091",
