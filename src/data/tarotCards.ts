@@ -52,20 +52,8 @@ export const tarotExperienceCards: TarotCard[] = [
 
   // --- RESERVE DECK POOL (Drawn when cards turn & replace) ---
   {
-    id: "the-star",
-    cardIndexLabel: "Card 4",
-    name: "The Star",
-    romanNumeral: "XVII",
-    archetype: "Hope & Divine Renewal",
-    reflection: "Release the weight of what was. The universe is gently clearing space for genuine peace and renewal.",
-    actionGuidance: "Trust the slow renewal underway in your heart. You are divinely protected.",
-    element: "Air • Aquarius",
-    symbol: "★",
-    cardImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop"
-  },
-  {
     id: "the-high-priestess",
-    cardIndexLabel: "Card 5",
+    cardIndexLabel: "Card 4",
     name: "The High Priestess",
     romanNumeral: "II",
     archetype: "Sacred Intuition & Stillness",
@@ -74,29 +62,5 @@ export const tarotExperienceCards: TarotCard[] = [
     element: "Water • Moon",
     symbol: "☾",
     cardImage: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop"
-  },
-  {
-    id: "the-empress",
-    cardIndexLabel: "Card 6",
-    name: "The Empress",
-    romanNumeral: "III",
-    archetype: "Abundance & Fertility",
-    reflection: "You are entering a fertile season of growth, beauty, and heartfelt creative fulfillment.",
-    actionGuidance: "Nurture your dreams with patience; your efforts are blooming into reality.",
-    element: "Earth • Venus",
-    symbol: "♀",
-    cardImage: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800&auto=format&fit=crop"
-  },
-  {
-    id: "wheel-of-fortune",
-    cardIndexLabel: "Card 7",
-    name: "Wheel of Fortune",
-    romanNumeral: "X",
-    archetype: "Karmic Shift & Synchronicity",
-    reflection: "The cosmic wheel is turning in your favor. Sudden positive shifts and fortunate alignment are on their way.",
-    actionGuidance: "Embrace unexpected changes with confidence; destiny is orchestrating breakthroughs for you.",
-    element: "Fire • Jupiter",
-    symbol: "☸",
-    cardImage: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop"
   }
 ];

@@ -17,23 +17,25 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
   // Transition lock
   const [isReplacing, setIsReplacing] = useState<boolean>(false);
 
-  // Draw the next card from the deck that is not currently visible in any slot
-  const getNextCard = (currentSlots: TarotCard[], currentPointer: number) => {
-    const visibleIds = new Set(currentSlots.map((c) => c.id));
+  // Draw the next card from the deck that is not currently visible in any other slot
+  const getNextCard = (currentSlots: TarotCard[], slotIdx: number, currentPointer: number) => {
+    const otherVisibleIds = new Set(
+      currentSlots.filter((_, i) => i !== slotIdx).map((c) => c.id)
+    );
     for (let i = 0; i < tarotExperienceCards.length; i++) {
       const candidateIndex = (currentPointer + i) % tarotExperienceCards.length;
       const candidate = tarotExperienceCards[candidateIndex];
-      if (!visibleIds.has(candidate.id)) {
+      if (!otherVisibleIds.has(candidate.id) && candidate.id !== currentSlots[slotIdx].id) {
         return {
           nextCard: candidate,
           nextPointer: (candidateIndex + 1) % tarotExperienceCards.length,
         };
       }
     }
-    const fallbackIndex = currentPointer % tarotExperienceCards.length;
+    // If no unused card is in reserve, keep current card
     return {
-      nextCard: tarotExperienceCards[fallbackIndex],
-      nextPointer: (currentPointer + 1) % tarotExperienceCards.length,
+      nextCard: currentSlots[slotIdx],
+      nextPointer: currentPointer,
     };
   };
 
@@ -45,7 +47,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
     // Halfway through 600ms flip animation (while card is perpendicular / edge-on), swap the card
     setTimeout(() => {
       setSlots((prevSlots) => {
-        const { nextCard, nextPointer } = getNextCard(prevSlots, deckPointer);
+        const { nextCard, nextPointer } = getNextCard(prevSlots, slotIdx, deckPointer);
         setDeckPointer(nextPointer);
         const updated = [...prevSlots];
         updated[slotIdx] = nextCard;
