@@ -48,8 +48,8 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
           </p>
         </div>
 
-        {/* 3 Face-Down Tarot Cards — Single Row on Mobile, Tablet & Desktop */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-6 md:gap-10 max-w-4xl mx-auto perspective-1000">
+        {/* 5 Face-Down Tarot Cards — Single Row on Mobile, Tablet & Desktop */}
+        <div className="grid grid-cols-5 gap-1.5 sm:gap-4 md:gap-6 max-w-5xl mx-auto perspective-1000">
           {tarotExperienceCards.map((card, idx) => {
             const isFlipped = selectedCardId === card.id;
             const isAnotherSelected = selectedCardId !== null && !isFlipped;
@@ -60,7 +60,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: idx * 0.15 }}
+                transition={{ duration: 0.6, delay: idx * 0.1 }}
                 className={`cursor-pointer transition-all duration-500 ${
                   isAnotherSelected ? 'opacity-40 scale-95' : 'hover:scale-[1.02]'
                 }`}
@@ -68,40 +68,40 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
               >
                 {/* 3D Flip Container */}
                 <div
-                  className={`relative w-full aspect-[9/16] sm:aspect-[9/15] rounded-2xl sm:rounded-3xl transform-style-preserve-3d transition-transform duration-700 shadow-lg sm:shadow-xl ${
+                  className={`relative w-full aspect-[9/16] sm:aspect-[9/15] rounded-xl sm:rounded-3xl transform-style-preserve-3d transition-transform duration-700 shadow-md sm:shadow-xl ${
                     isFlipped ? 'rotate-y-180' : ''
                   }`}
                 >
                   
                   {/* CARD BACK (Face-Down: Image is not showing initially) */}
-                  <div className="absolute inset-0 backface-hidden rounded-2xl sm:rounded-3xl p-2 sm:p-5 bg-gradient-to-b from-[#FAF6F0] to-[#EFE5F5] border sm:border-2 border-secondaryPurple/50 shadow-md sm:shadow-2xl flex flex-col justify-between overflow-hidden">
+                  <div className="absolute inset-0 backface-hidden rounded-xl sm:rounded-3xl p-1 sm:p-4 bg-gradient-to-b from-[#FAF6F0] to-[#EFE5F5] border sm:border-2 border-secondaryPurple/50 shadow-md sm:shadow-2xl flex flex-col justify-between overflow-hidden">
                     {/* Intricate Inner Ornamental Border */}
-                    <div className="w-full h-full rounded-xl sm:rounded-2xl border border-secondaryPurple/40 p-1.5 sm:p-4 flex flex-col justify-between items-center relative">
-                      <div className="flex justify-between w-full text-secondaryPurple text-[9px] sm:text-xs">
+                    <div className="w-full h-full rounded-lg sm:rounded-2xl border border-secondaryPurple/40 p-1 sm:p-3 flex flex-col justify-between items-center relative">
+                      <div className="flex justify-between w-full text-secondaryPurple text-[7px] sm:text-xs">
                         <span>✦</span>
                         <span>☾</span>
                         <span>✦</span>
                       </div>
 
                       {/* Center Sacred Geometry Medallion */}
-                      <div className="flex flex-col items-center space-y-1 sm:space-y-3">
-                        <div className="w-10 h-10 sm:w-20 sm:h-20 rounded-full border border-secondaryPurple/60 flex items-center justify-center bg-white/40 shadow-inner group">
-                          <span className="font-editorial text-xs sm:text-2xl text-mutedPurple font-semibold">
-                            {idx === 0 ? 'Card 1' : idx === 1 ? 'Card 2' : 'Card 3'}
+                      <div className="flex flex-col items-center space-y-0.5 sm:space-y-2">
+                        <div className="w-7 h-7 sm:w-16 sm:h-16 rounded-full border border-secondaryPurple/60 flex items-center justify-center bg-white/40 shadow-inner group">
+                          <span className="font-editorial text-[8px] sm:text-lg md:text-xl text-mutedPurple font-semibold whitespace-nowrap">
+                            {card.cardIndexLabel}
                           </span>
                         </div>
-                        <span className="text-[7px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.3em] uppercase text-brandLightText font-mono">
+                        <span className="text-[6px] sm:text-[9.5px] tracking-wider uppercase text-brandLightText font-mono">
                           Tarot
                         </span>
                       </div>
 
                       <div className="text-center">
-                        <span className="inline-block px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-lightLavender/70 text-[7px] sm:text-[10px] font-semibold tracking-wider sm:tracking-widest uppercase text-brandText whitespace-nowrap">
+                        <span className="inline-block px-1 py-0.5 sm:px-3 sm:py-1 rounded-full bg-lightLavender/70 text-[6px] sm:text-[9.5px] font-semibold tracking-wider uppercase text-brandText whitespace-nowrap">
                           Reveal ✦
                         </span>
                       </div>
 
-                      <div className="flex justify-between w-full text-secondaryPurple text-[9px] sm:text-xs">
+                      <div className="flex justify-between w-full text-secondaryPurple text-[7px] sm:text-xs">
                         <span>✦</span>
                         <span>☾</span>
                         <span>✦</span>
@@ -110,10 +110,10 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
                   </div>
 
                   {/* CARD FRONT (Revealed on Tap: Shows the Full Card Image & Name Below) */}
-                  <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2.5 bg-softCream border sm:border-2 border-mutedPurple/60 shadow-md sm:shadow-2xl flex flex-col justify-between overflow-hidden">
+                  <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-xl sm:rounded-3xl p-1 sm:p-2 bg-softCream border sm:border-2 border-mutedPurple/60 shadow-md sm:shadow-2xl flex flex-col justify-between overflow-hidden">
                     
                     {/* Full Tarot Card Image */}
-                    <div className="relative w-full flex-1 rounded-xl sm:rounded-2xl overflow-hidden bg-warmBeige border border-secondaryPurple/25 shadow-inner">
+                    <div className="relative w-full flex-1 rounded-lg sm:rounded-2xl overflow-hidden bg-warmBeige border border-secondaryPurple/25 shadow-inner">
                       <img
                         src={card.cardImage}
                         alt={card.name}
@@ -122,11 +122,11 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
                     </div>
 
                     {/* Below Card Image: Name & Roman Numeral */}
-                    <div className="pt-1.5 pb-0.5 sm:pt-2 sm:pb-0.5 text-center shrink-0">
-                      <p className="font-editorial text-[9.5px] sm:text-sm md:text-base text-brandText font-semibold leading-tight truncate">
+                    <div className="pt-1 pb-0.5 sm:pt-2 sm:pb-0.5 text-center shrink-0">
+                      <p className="font-editorial text-[7.5px] sm:text-sm md:text-base text-brandText font-semibold leading-tight truncate">
                         {card.name}
                       </p>
-                      <span className="text-[7px] sm:text-[9.5px] uppercase tracking-wider text-mutedPurple font-medium block truncate">
+                      <span className="text-[6px] sm:text-[9.5px] uppercase tracking-wider text-mutedPurple font-medium block truncate">
                         {card.cardIndexLabel} • {card.romanNumeral}
                       </span>
                     </div>
