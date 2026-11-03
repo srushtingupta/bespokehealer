@@ -192,7 +192,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
                       <div className="pt-1 w-full flex items-center justify-center">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-mutedPurple/15 text-mutedPurple hover:bg-mutedPurple hover:text-white text-[7px] sm:text-[10px] font-semibold tracking-wider uppercase transition-colors">
                           <RotateCcw className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                          <span>Turn &amp; Replace</span>
+                          <span>{tarotExperienceCards.length > 3 ? 'Turn & Replace' : 'Turn Back'}</span>
                         </span>
                       </div>
 
@@ -216,7 +216,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
           </button>
 
           <p className="text-[11px] text-brandLightText">
-            ✦ Tap any card to flip it and read its description. Tapping it again turns it back and replaces it with a new card from the deck.
+            ✦ Tap any card to flip it and read its description. Tapping it again turns it back.
           </p>
         </div>
 

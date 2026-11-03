@@ -48,19 +48,5 @@ export const tarotExperienceCards: TarotCard[] = [
     element: "Fire • Solar",
     symbol: "☼",
     cardImage: "/tarot-the-sun.jpg"
-  },
-
-  // --- RESERVE DECK POOL (Drawn when cards turn & replace) ---
-  {
-    id: "the-high-priestess",
-    cardIndexLabel: "Card 4",
-    name: "The High Priestess",
-    romanNumeral: "II",
-    archetype: "Sacred Intuition & Stillness",
-    reflection: "The answer you seek cannot be found in the noise. It waits in the stillness between your thoughts.",
-    actionGuidance: "Honor your quiet instinct before making your next move.",
-    element: "Water • Moon",
-    symbol: "☾",
-    cardImage: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop"
   }
 ];
