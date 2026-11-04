@@ -67,6 +67,50 @@ export const tarotDeck: TarotCard[] = [
     cardImage: "/tarot-ace-of-swords.jpg"
   },
   {
+    id: "ten-of-cups",
+    name: "10 of Cups",
+    romanNumeral: "X",
+    archetype: "Prosperity, Joy & Contentment",
+    reflection: "10 of cups - Prosperity,joy, family & contentment",
+    actionGuidance: "Celebrate the love, harmony, and blessings surrounding your home and relationships.",
+    element: "Water • Cups",
+    symbol: "✦",
+    cardImage: "/tarot-ten-of-cups.jpg"
+  },
+  {
+    id: "the-lovers",
+    name: "The Lovers",
+    romanNumeral: "VI",
+    archetype: "Positive Influence & True Love",
+    reflection: "The person coming Into your orbit now has a positive influence & offers true love - provided you follow the guidance of your heart",
+    actionGuidance: "Open your heart to genuine connection and follow your intuition with authenticity.",
+    element: "Air • Major Arcana",
+    symbol: "♡",
+    cardImage: "/tarot-the-lovers.jpg"
+  },
+  {
+    id: "justice",
+    name: "Justice",
+    romanNumeral: "XI",
+    archetype: "Truth, Balance & Fairness",
+    reflection: "This is a time when past errors / imbalances can be redressed.",
+    actionGuidance: "Fairness and balance will prevail. Trust the karmic equilibrium aligning in your life.",
+    element: "Air • Major Arcana",
+    symbol: "⚖",
+    cardImage: "/tarot-justice.jpg"
+  },
+  {
+    id: "queen-of-pentacles",
+    name: "Queen of Pentacles",
+    romanNumeral: "Queen",
+    archetype: "Good Health, Fertility & Abundance",
+    reflection: "Queen of pentacles - positive card for good health, fertility & children",
+    actionGuidance: "Nurture your body, home, and family with grounded warmth and abundant care.",
+    element: "Earth • Pentacles",
+    symbol: "✦",
+    cardImage: "/tarot-queen-of-pentacles.jpg"
+  },
+  {
     id: "six-of-pentacles",
     name: "Six of Pentacles",
     romanNumeral: "VI",
