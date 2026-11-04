@@ -1,28 +1,111 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, RotateCcw } from 'lucide-react';
-import { tarotExperienceCards } from '../data/tarotCards';
+import { Sparkles, RotateCcw, Shuffle } from 'lucide-react';
+import { tarotDeck, type TarotCard } from '../data/tarotCards';
 
 interface TarotExperienceProps {
   onBookClick: () => void;
 }
 
+interface SlotState {
+  slotLabel: string;
+  card: TarotCard;
+  isFlipped: boolean;
+  isFlipping: boolean;
+}
+
 export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick }) => {
-  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  // Always display exactly 3 card slots on screen
+  const [slots, setSlots] = useState<SlotState[]>([
+    { slotLabel: 'Card 1', card: tarotDeck[0], isFlipped: false, isFlipping: false },
+    { slotLabel: 'Card 2', card: tarotDeck[1], isFlipped: false, isFlipping: false },
+    { slotLabel: 'Card 3', card: tarotDeck[2], isFlipped: false, isFlipping: false },
+  ]);
 
-  const activeCard = tarotExperienceCards.find((c) => c.id === selectedCardId);
+  const [activeSlotIdx, setActiveSlotIdx] = useState<number | null>(null);
 
-  const handleCardClick = (id: string) => {
-    // If clicking the currently selected/flipped card -> flip it back
-    if (selectedCardId === id) {
-      setSelectedCardId(null);
+  const activeSlot = activeSlotIdx !== null ? slots[activeSlotIdx] : null;
+  const activeCard = activeSlot?.isFlipped ? activeSlot.card : null;
+
+  // Helper to pick a new card from tarotDeck that isn't currently shown in other slots
+  const getNextCardForSlot = (targetSlotIdx: number, currentCardId: string): TarotCard => {
+    const otherDisplayedIds = slots
+      .filter((_, idx) => idx !== targetSlotIdx)
+      .map((s) => s.card.id);
+
+    const availableCards = tarotDeck.filter(
+      (c) => !otherDisplayedIds.includes(c.id) && c.id !== currentCardId
+    );
+
+    if (availableCards.length > 0) {
+      return availableCards[Math.floor(Math.random() * availableCards.length)];
+    }
+
+    const fallback = tarotDeck.filter((c) => c.id !== currentCardId);
+    return fallback[Math.floor(Math.random() * fallback.length)] || tarotDeck[0];
+  };
+
+  const handleSlotClick = (slotIdx: number) => {
+    const currentSlot = slots[slotIdx];
+    if (currentSlot.isFlipping) return;
+
+    if (!currentSlot.isFlipped) {
+      // 1st click on this slot: Flip open to reveal!
+      setSlots((prev) =>
+        prev.map((s, idx) => {
+          if (idx === slotIdx) {
+            return { ...s, isFlipped: true, isFlipping: false };
+          } else if (s.isFlipped) {
+            // If another slot was flipped, flip it back down and assign it a fresh card
+            const freshCard = getNextCardForSlot(idx, s.card.id);
+            return { ...s, card: freshCard, isFlipped: false, isFlipping: false };
+          } else {
+            return s;
+          }
+        })
+      );
+      setActiveSlotIdx(slotIdx);
     } else {
-      setSelectedCardId(id);
+      // 2nd click (or subsequent clicks) on this slot:
+      // It flips and reveals a NEW card from the deck!
+      const nextCard = getNextCardForSlot(slotIdx, currentSlot.card.id);
+
+      // Phase 1: Flip face down
+      setSlots((prev) =>
+        prev.map((s, idx) =>
+          idx === slotIdx ? { ...s, isFlipped: false, isFlipping: true } : s
+        )
+      );
+
+      // Phase 2: After 300ms (at 90° edge-on), load new card and flip back up!
+      setTimeout(() => {
+        setSlots((prev) =>
+          prev.map((s, idx) =>
+            idx === slotIdx
+              ? { ...s, card: nextCard, isFlipped: true, isFlipping: false }
+              : s
+          )
+        );
+        setActiveSlotIdx(slotIdx);
+      }, 300);
+    }
+  };
+
+  const handleDrawAnother = () => {
+    if (activeSlotIdx !== null) {
+      handleSlotClick(activeSlotIdx);
     }
   };
 
   const handleReset = () => {
-    setSelectedCardId(null);
+    // Flip all cards back face-down with fresh cards
+    const shuffled = [...tarotDeck].sort(() => 0.5 - Math.random());
+    setSlots([
+      { slotLabel: 'Card 1', card: shuffled[0], isFlipped: false, isFlipping: false },
+      { slotLabel: 'Card 2', card: shuffled[1], isFlipped: false, isFlipping: false },
+      { slotLabel: 'Card 3', card: shuffled[2], isFlipped: false, isFlipping: false },
+    ]);
+    setActiveSlotIdx(null);
   };
 
   return (
@@ -44,64 +127,63 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
           </h2>
 
           <p className="text-xs sm:text-base text-brandLightText font-light max-w-md">
-            Take a deep breath. Focus on what currently sits in your heart, then tap any card to unveil its guidance.
+            Take a deep breath. Focus on what currently sits in your heart, then tap any card to unveil its guidance. Tap again anytime to draw a new card.
           </p>
         </div>
 
-        {/* 5 Face-Down Tarot Cards — Single Row on Mobile, Tablet & Desktop */}
-        <div className="grid grid-cols-5 gap-1.5 sm:gap-4 md:gap-6 max-w-5xl mx-auto perspective-1000">
-          {tarotExperienceCards.map((card, idx) => {
-            const isFlipped = selectedCardId === card.id;
-            const isAnotherSelected = selectedCardId !== null && !isFlipped;
+        {/* Exactly 3 Face-Down Tarot Cards — Single Row on Mobile, Tablet & Desktop */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-6 md:gap-10 max-w-4xl mx-auto perspective-1000">
+          {slots.map((slot, idx) => {
+            const isAnotherSelected = activeSlotIdx !== null && activeSlotIdx !== idx;
 
             return (
               <motion.div
-                key={card.id}
+                key={slot.slotLabel}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
+                transition={{ duration: 0.6, delay: idx * 0.15 }}
                 className={`cursor-pointer transition-all duration-500 ${
                   isAnotherSelected ? 'opacity-40 scale-95' : 'hover:scale-[1.02]'
                 }`}
-                onClick={() => handleCardClick(card.id)}
+                onClick={() => handleSlotClick(idx)}
               >
                 {/* 3D Flip Container */}
                 <div
-                  className={`relative w-full aspect-[9/16] sm:aspect-[9/15] rounded-xl sm:rounded-3xl transform-style-preserve-3d transition-transform duration-700 shadow-md sm:shadow-xl ${
-                    isFlipped ? 'rotate-y-180' : ''
+                  className={`relative w-full aspect-[9/16] sm:aspect-[9/15] rounded-2xl sm:rounded-3xl transform-style-preserve-3d transition-transform duration-500 shadow-lg sm:shadow-xl ${
+                    slot.isFlipped ? 'rotate-y-180' : ''
                   }`}
                 >
                   
                   {/* CARD BACK (Face-Down: Image is not showing initially) */}
-                  <div className="absolute inset-0 backface-hidden rounded-xl sm:rounded-3xl p-1 sm:p-4 bg-gradient-to-b from-[#FAF6F0] to-[#EFE5F5] border sm:border-2 border-secondaryPurple/50 shadow-md sm:shadow-2xl flex flex-col justify-between overflow-hidden">
+                  <div className="absolute inset-0 backface-hidden rounded-2xl sm:rounded-3xl p-2 sm:p-5 bg-gradient-to-b from-[#FAF6F0] to-[#EFE5F5] border sm:border-2 border-secondaryPurple/50 shadow-md sm:shadow-2xl flex flex-col justify-between overflow-hidden">
                     {/* Intricate Inner Ornamental Border */}
-                    <div className="w-full h-full rounded-lg sm:rounded-2xl border border-secondaryPurple/40 p-1 sm:p-3 flex flex-col justify-between items-center relative">
-                      <div className="flex justify-between w-full text-secondaryPurple text-[7px] sm:text-xs">
+                    <div className="w-full h-full rounded-xl sm:rounded-2xl border border-secondaryPurple/40 p-1.5 sm:p-4 flex flex-col justify-between items-center relative">
+                      <div className="flex justify-between w-full text-secondaryPurple text-[9px] sm:text-xs">
                         <span>✦</span>
                         <span>☾</span>
                         <span>✦</span>
                       </div>
 
                       {/* Center Sacred Geometry Medallion */}
-                      <div className="flex flex-col items-center space-y-0.5 sm:space-y-2">
-                        <div className="w-7 h-7 sm:w-16 sm:h-16 rounded-full border border-secondaryPurple/60 flex items-center justify-center bg-white/40 shadow-inner group">
-                          <span className="font-editorial text-[8px] sm:text-lg md:text-xl text-mutedPurple font-semibold whitespace-nowrap">
-                            {card.cardIndexLabel}
+                      <div className="flex flex-col items-center space-y-1 sm:space-y-3">
+                        <div className="w-11 h-11 sm:w-20 sm:h-20 rounded-full border border-secondaryPurple/60 flex items-center justify-center bg-white/40 shadow-inner group">
+                          <span className="font-editorial text-xs sm:text-2xl text-mutedPurple font-semibold whitespace-nowrap">
+                            {slot.slotLabel}
                           </span>
                         </div>
-                        <span className="text-[6px] sm:text-[9.5px] tracking-wider uppercase text-brandLightText font-mono">
+                        <span className="text-[7px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.3em] uppercase text-brandLightText font-mono">
                           Tarot
                         </span>
                       </div>
 
                       <div className="text-center">
-                        <span className="inline-block px-1 py-0.5 sm:px-3 sm:py-1 rounded-full bg-lightLavender/70 text-[6px] sm:text-[9.5px] font-semibold tracking-wider uppercase text-brandText whitespace-nowrap">
+                        <span className="inline-block px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-lightLavender/70 text-[7px] sm:text-[10px] font-semibold tracking-wider sm:tracking-widest uppercase text-brandText whitespace-nowrap">
                           Reveal ✦
                         </span>
                       </div>
 
-                      <div className="flex justify-between w-full text-secondaryPurple text-[7px] sm:text-xs">
+                      <div className="flex justify-between w-full text-secondaryPurple text-[9px] sm:text-xs">
                         <span>✦</span>
                         <span>☾</span>
                         <span>✦</span>
@@ -110,25 +192,30 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
                   </div>
 
                   {/* CARD FRONT (Revealed on Tap: Shows the Full Card Image & Name Below) */}
-                  <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-xl sm:rounded-3xl p-1 sm:p-2 bg-softCream border sm:border-2 border-mutedPurple/60 shadow-md sm:shadow-2xl flex flex-col justify-between overflow-hidden">
+                  <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2.5 bg-softCream border sm:border-2 border-mutedPurple/60 shadow-md sm:shadow-2xl flex flex-col justify-between overflow-hidden">
                     
                     {/* Full Tarot Card Image */}
-                    <div className="relative w-full flex-1 rounded-lg sm:rounded-2xl overflow-hidden bg-warmBeige border border-secondaryPurple/25 shadow-inner">
+                    <div className="relative w-full flex-1 rounded-xl sm:rounded-2xl overflow-hidden bg-warmBeige border border-secondaryPurple/25 shadow-inner">
                       <img
-                        src={card.cardImage}
-                        alt={card.name}
+                        src={slot.card.cardImage}
+                        alt={slot.card.name}
                         className="w-full h-full object-cover object-top filter contrast-[1.03]"
                       />
                     </div>
 
                     {/* Below Card Image: Name & Roman Numeral */}
-                    <div className="pt-1 pb-0.5 sm:pt-2 sm:pb-0.5 text-center shrink-0">
-                      <p className="font-editorial text-[7.5px] sm:text-sm md:text-base text-brandText font-semibold leading-tight truncate">
-                        {card.name}
+                    <div className="pt-1.5 pb-0.5 sm:pt-2 sm:pb-0.5 text-center shrink-0">
+                      <p className="font-editorial text-[9.5px] sm:text-sm md:text-base text-brandText font-semibold leading-tight truncate">
+                        {slot.card.name}
                       </p>
-                      <span className="text-[6px] sm:text-[9.5px] uppercase tracking-wider text-mutedPurple font-medium block truncate">
-                        {card.cardIndexLabel} • {card.romanNumeral}
-                      </span>
+                      <div className="flex items-center justify-center gap-1 mt-0.5">
+                        <span className="text-[7px] sm:text-[9.5px] uppercase tracking-wider text-mutedPurple font-medium block truncate">
+                          {slot.slotLabel} • {slot.card.romanNumeral}
+                        </span>
+                        <span className="hidden sm:inline text-[8px] px-1.5 py-0.2 rounded-full bg-lightLavender/80 text-mutedPurple font-medium">
+                          Tap to Change
+                        </span>
+                      </div>
                     </div>
 
                   </div>
@@ -140,9 +227,10 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
         </div>
 
         {/* Below the Cards: Write the Card Name and Description */}
-        <AnimatePresence>
-          {activeCard && (
+        <AnimatePresence mode="wait">
+          {activeCard && activeSlot && (
             <motion.div
+              key={activeCard.id + activeSlot.slotLabel}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -151,7 +239,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
             >
               <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-mutedPurple">
                 <span>✦</span>
-                <span>{activeCard.cardIndexLabel} Revealed • {activeCard.romanNumeral}</span>
+                <span>{activeSlot.slotLabel} Revealed • {activeCard.romanNumeral}</span>
                 <span>✦</span>
               </div>
 
@@ -190,11 +278,21 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
                 </button>
 
                 <button
+                  onClick={handleDrawAnother}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-lightLavender hover:bg-[#ded1e8] text-xs font-semibold tracking-wider uppercase text-brandText transition-all border border-secondaryPurple/40 shadow-xs hover:shadow-md active:scale-95"
+                  title="Draw another card for this slot"
+                >
+                  <Shuffle className="w-3.5 h-3.5 text-mutedPurple" />
+                  <span>Draw Another Card</span>
+                </button>
+
+                <button
                   onClick={handleReset}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-warmBeige hover:bg-lightLavender text-xs font-semibold tracking-wider uppercase text-brandText transition-all border border-secondaryPurple/40 shadow-xs hover:shadow-md active:scale-95"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-warmBeige hover:bg-lightLavender text-xs font-semibold tracking-wider uppercase text-brandText transition-all border border-secondaryPurple/40 shadow-xs hover:shadow-md active:scale-95"
+                  title="Reset and flip all cards back face-down"
                 >
                   <RotateCcw className="w-3.5 h-3.5 text-mutedPurple" />
-                  <span>Choose Another Card</span>
+                  <span>Reset Cards</span>
                 </button>
               </div>
             </motion.div>
@@ -210,7 +308,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
           >
             <p className="text-xs text-brandLightText tracking-wide flex items-center justify-center gap-2">
               <span className="text-mutedPurple">✦</span>
-              <span>Tap any card to reveal its image and read its sacred guidance below.</span>
+              <span>Tap any card to reveal its image. Tap again anytime to draw a new card!</span>
               <span className="text-mutedPurple">✦</span>
             </p>
           </motion.div>

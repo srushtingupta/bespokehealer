@@ -1,6 +1,5 @@
 export interface TarotCard {
   id: string;
-  cardIndexLabel: string;
   name: string;
   romanNumeral: string;
   archetype: string;
@@ -11,10 +10,9 @@ export interface TarotCard {
   cardImage: string;
 }
 
-export const tarotExperienceCards: TarotCard[] = [
+export const tarotDeck: TarotCard[] = [
   {
-    id: "card-1-the-star",
-    cardIndexLabel: "Card 1",
+    id: "the-star",
     name: "The Star",
     romanNumeral: "XVII",
     archetype: "Hope, Faith & Divine Renewal",
@@ -25,8 +23,7 @@ export const tarotExperienceCards: TarotCard[] = [
     cardImage: "/tarot-the-star.jpg"
   },
   {
-    id: "card-2-strength",
-    cardIndexLabel: "Card 2",
+    id: "strength",
     name: "Strength",
     romanNumeral: "VIII",
     archetype: "Inner Courage & Determination",
@@ -37,8 +34,7 @@ export const tarotExperienceCards: TarotCard[] = [
     cardImage: "/tarot-strength.jpg"
   },
   {
-    id: "card-3-two-of-wands",
-    cardIndexLabel: "Card 3",
+    id: "two-of-wands",
     name: "2 of Wands",
     romanNumeral: "II",
     archetype: "Plans, Partnership & Influence",
@@ -49,8 +45,7 @@ export const tarotExperienceCards: TarotCard[] = [
     cardImage: "/tarot-two-of-wands.jpg"
   },
   {
-    id: "card-4-the-hanged-man",
-    cardIndexLabel: "Card 4",
+    id: "the-hanged-man",
     name: "The Hanged Man",
     romanNumeral: "XII",
     archetype: "Patience, Stillness & Ambition",
@@ -61,8 +56,7 @@ export const tarotExperienceCards: TarotCard[] = [
     cardImage: "/tarot-the-hanged-man.jpg"
   },
   {
-    id: "card-5-ace-of-swords",
-    cardIndexLabel: "Card 5",
+    id: "ace-of-swords",
     name: "Ace of Swords",
     romanNumeral: "Ace",
     archetype: "Mental Agility & Assertiveness",
@@ -71,5 +65,41 @@ export const tarotExperienceCards: TarotCard[] = [
     element: "Air • Swords",
     symbol: "🗡",
     cardImage: "/tarot-ace-of-swords.jpg"
+  },
+  {
+    id: "six-of-pentacles",
+    name: "Six of Pentacles",
+    romanNumeral: "VI",
+    archetype: "Circumstances Will Improve",
+    reflection: "This card is a welcome sign that your circumstances will certainly improve.",
+    actionGuidance: "Stay open to receiving blessings, help, and the harmonious balance returning to your life.",
+    element: "Earth • Pentacles",
+    symbol: "✦",
+    cardImage: "/tarot-six-of-pentacles.jpg"
+  },
+  {
+    id: "five-of-wands",
+    name: "5 of Wands",
+    romanNumeral: "V",
+    archetype: "Hold Your Position & Succeed",
+    reflection: "5 of Wands — Misunderstandings abound, particularly in work matters. You are surrounded by people with strong opinions but hold your position & you will succeed.",
+    actionGuidance: "Stand firm in your truth with grace. Channel chaotic competitive energy into creative triumph.",
+    element: "Fire • Wands",
+    symbol: "⚡",
+    cardImage: "/tarot-five-of-wands.jpg"
+  },
+  {
+    id: "the-sun",
+    name: "The Sun",
+    romanNumeral: "XIX",
+    archetype: "Complete Life Improvement",
+    reflection: "If you have had a challenging time, the Sun shows that every aspect of your life will improve.",
+    actionGuidance: "Celebrate your resilience and bask in renewed clarity, warmth, and vitality.",
+    element: "Fire • Solar",
+    symbol: "☼",
+    cardImage: "/tarot-the-sun.jpg"
   }
 ];
+
+// Alias for backwards compatibility
+export const tarotExperienceCards = tarotDeck;
