@@ -389,41 +389,5 @@ export const productsData: Product[] = [
     availability: "In Stock",
     featured: true,
     whatsappMessage: "Hi Dr. Srushti 👋 I would like to order the 7 Horses Pyrite Frame (950/-). Please share order and delivery details."
-  },
-  {
-    id: "hanging-7-chakra-raw",
-    name: "7 Chakra Raw Crystal Wall Hanging",
-    slug: "7-chakra-raw-crystal-wall-hanging",
-    category: "wall-hangings",
-    categoryLabel: "Frames & Hangings",
-    subcategory: "Sanctuary Hanging",
-    image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=900&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=900&auto=format&fit=crop"
-    ],
-    shortDescription: "Seven unpolished raw gemstones suspended along a refined brass chain with moon phase accents.",
-    description: "An editorial statement piece for living rooms, yoga nooks, or entry foyers. As sunlight touches each stone, it infuses the room with chromatic harmony.",
-    price: "₹2,400",
-    availability: "In Stock",
-    featured: true,
-    whatsappMessage: "Hi Dr. Srushti 👋 I saw the 7 Chakra Raw Crystal Wall Hanging on the Bespoke Healer website and I'm interested in it. Could you please share the price and availability?"
-  },
-  {
-    id: "hanging-selenite-hamsa",
-    name: "Selenite & Evil Eye Sanctuary Hanger",
-    slug: "selenite-evil-eye-sanctuary-hanger",
-    category: "wall-hangings",
-    categoryLabel: "Frames & Hangings",
-    subcategory: "Protective Amulet",
-    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=900&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=900&auto=format&fit=crop"
-    ],
-    shortDescription: "Raw Moroccan selenite bar paired with artisan glass evil-eye medallion and linen cord.",
-    description: "Placed upon the front doorway or window to bless those who enter while filtering away anxious or intrusive vibrations.",
-    price: "₹1,850",
-    availability: "In Stock",
-    featured: false,
-    whatsappMessage: "Hi Dr. Srushti 👋 I saw the Selenite Sanctuary Hanger on the Bespoke Healer website and I'm interested in it. Could you please share the price and availability?"
   }
 ];
