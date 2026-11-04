@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, RotateCcw, Shuffle } from 'lucide-react';
+import { Sparkles, RotateCcw } from 'lucide-react';
 import { tarotDeck, type TarotCard } from '../data/tarotCards';
 
 interface TarotExperienceProps {
@@ -11,18 +11,18 @@ interface SlotState {
   slotLabel: string;
   card: TarotCard;
   isFlipped: boolean;
-  isFlipping: boolean;
 }
 
 export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick }) => {
   // Always display exactly 3 card slots on screen
   const [slots, setSlots] = useState<SlotState[]>([
-    { slotLabel: 'Card 1', card: tarotDeck[0], isFlipped: false, isFlipping: false },
-    { slotLabel: 'Card 2', card: tarotDeck[1], isFlipped: false, isFlipping: false },
-    { slotLabel: 'Card 3', card: tarotDeck[2], isFlipped: false, isFlipping: false },
+    { slotLabel: 'Card 1', card: tarotDeck[0], isFlipped: false },
+    { slotLabel: 'Card 2', card: tarotDeck[1], isFlipped: false },
+    { slotLabel: 'Card 3', card: tarotDeck[2], isFlipped: false },
   ]);
 
   const [activeSlotIdx, setActiveSlotIdx] = useState<number | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const activeSlot = activeSlotIdx !== null ? slots[activeSlotIdx] : null;
   const activeCard = activeSlot?.isFlipped ? activeSlot.card : null;
@@ -46,66 +46,60 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
   };
 
   const handleSlotClick = (slotIdx: number) => {
-    const currentSlot = slots[slotIdx];
-    if (currentSlot.isFlipping) return;
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 550);
 
-    if (!currentSlot.isFlipped) {
-      // 1st click on this slot: Flip open to reveal!
+    const currentSlot = slots[slotIdx];
+
+    if (currentSlot.isFlipped) {
+      // --- 2nd Click on open card ---
+      // User clicks again: Flip back to original face-down side!
+      // And prepare a new card under the hood for when it's clicked next time.
+      const nextCard = getNextCardForSlot(slotIdx, currentSlot.card.id);
+
+      // 1. Flip card back to original face-down side
+      setSlots((prev) =>
+        prev.map((s, idx) => (idx === slotIdx ? { ...s, isFlipped: false } : s))
+      );
+      setActiveSlotIdx(null);
+
+      // 2. Once the card has finished flipping face-down (500ms), load nextCard for the next flip
+      setTimeout(() => {
+        setSlots((prev) =>
+          prev.map((s, idx) => (idx === slotIdx ? { ...s, card: nextCard } : s))
+        );
+      }, 500);
+
+    } else {
+      // --- 1st Click on face-down card ---
+      // Flip open to reveal!
+      // If another card was currently open, flip it back down and queue a fresh card for it
       setSlots((prev) =>
         prev.map((s, idx) => {
           if (idx === slotIdx) {
-            return { ...s, isFlipped: true, isFlipping: false };
+            return { ...s, isFlipped: true };
           } else if (s.isFlipped) {
-            // If another slot was flipped, flip it back down and assign it a fresh card
-            const freshCard = getNextCardForSlot(idx, s.card.id);
-            return { ...s, card: freshCard, isFlipped: false, isFlipping: false };
+            const nextCardForOther = getNextCardForSlot(idx, s.card.id);
+            setTimeout(() => {
+              setSlots((p) =>
+                p.map((item, i) => (i === idx ? { ...item, card: nextCardForOther } : item))
+              );
+            }, 500);
+            return { ...s, isFlipped: false };
           } else {
             return s;
           }
         })
       );
       setActiveSlotIdx(slotIdx);
-    } else {
-      // 2nd click (or subsequent clicks) on this slot:
-      // It flips and reveals a NEW card from the deck!
-      const nextCard = getNextCardForSlot(slotIdx, currentSlot.card.id);
-
-      // Phase 1: Flip face down
-      setSlots((prev) =>
-        prev.map((s, idx) =>
-          idx === slotIdx ? { ...s, isFlipped: false, isFlipping: true } : s
-        )
-      );
-
-      // Phase 2: After 300ms (at 90° edge-on), load new card and flip back up!
-      setTimeout(() => {
-        setSlots((prev) =>
-          prev.map((s, idx) =>
-            idx === slotIdx
-              ? { ...s, card: nextCard, isFlipped: true, isFlipping: false }
-              : s
-          )
-        );
-        setActiveSlotIdx(slotIdx);
-      }, 300);
     }
   };
 
-  const handleDrawAnother = () => {
+  const handleFlipBack = () => {
     if (activeSlotIdx !== null) {
       handleSlotClick(activeSlotIdx);
     }
-  };
-
-  const handleReset = () => {
-    // Flip all cards back face-down with fresh cards
-    const shuffled = [...tarotDeck].sort(() => 0.5 - Math.random());
-    setSlots([
-      { slotLabel: 'Card 1', card: shuffled[0], isFlipped: false, isFlipping: false },
-      { slotLabel: 'Card 2', card: shuffled[1], isFlipped: false, isFlipping: false },
-      { slotLabel: 'Card 3', card: shuffled[2], isFlipped: false, isFlipping: false },
-    ]);
-    setActiveSlotIdx(null);
   };
 
   return (
@@ -127,7 +121,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
           </h2>
 
           <p className="text-xs sm:text-base text-brandLightText font-light max-w-md">
-            Take a deep breath. Focus on what currently sits in your heart, then tap any card to unveil its guidance. Tap again anytime to draw a new card.
+            Take a deep breath. Focus on what currently sits in your heart, then tap any card to unveil its guidance. Tap again to flip it back.
           </p>
         </div>
 
@@ -213,7 +207,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
                           {slot.slotLabel} • {slot.card.romanNumeral}
                         </span>
                         <span className="hidden sm:inline text-[8px] px-1.5 py-0.2 rounded-full bg-lightLavender/80 text-mutedPurple font-medium">
-                          Tap to Change
+                          Tap to Flip Back
                         </span>
                       </div>
                     </div>
@@ -278,21 +272,12 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
                 </button>
 
                 <button
-                  onClick={handleDrawAnother}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-lightLavender hover:bg-[#ded1e8] text-xs font-semibold tracking-wider uppercase text-brandText transition-all border border-secondaryPurple/40 shadow-xs hover:shadow-md active:scale-95"
-                  title="Draw another card for this slot"
-                >
-                  <Shuffle className="w-3.5 h-3.5 text-mutedPurple" />
-                  <span>Draw Another Card</span>
-                </button>
-
-                <button
-                  onClick={handleReset}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-warmBeige hover:bg-lightLavender text-xs font-semibold tracking-wider uppercase text-brandText transition-all border border-secondaryPurple/40 shadow-xs hover:shadow-md active:scale-95"
-                  title="Reset and flip all cards back face-down"
+                  onClick={handleFlipBack}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-warmBeige hover:bg-lightLavender text-xs font-semibold tracking-wider uppercase text-brandText transition-all border border-secondaryPurple/40 shadow-xs hover:shadow-md active:scale-95"
+                  title="Flip this card back to original side"
                 >
                   <RotateCcw className="w-3.5 h-3.5 text-mutedPurple" />
-                  <span>Reset Cards</span>
+                  <span>Flip Card Back</span>
                 </button>
               </div>
             </motion.div>
@@ -308,7 +293,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
           >
             <p className="text-xs text-brandLightText tracking-wide flex items-center justify-center gap-2">
               <span className="text-mutedPurple">✦</span>
-              <span>Tap any card to reveal its image. Tap again anytime to draw a new card!</span>
+              <span>Tap any card to reveal its image and read its sacred guidance below.</span>
               <span className="text-mutedPurple">✦</span>
             </p>
           </motion.div>
