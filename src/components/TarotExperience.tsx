@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, RotateCcw } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { tarotDeck, type TarotCard } from '../data/tarotCards';
 
 interface TarotExperienceProps {
@@ -93,12 +93,6 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
         })
       );
       setActiveSlotIdx(slotIdx);
-    }
-  };
-
-  const handleFlipBack = () => {
-    if (activeSlotIdx !== null) {
-      handleSlotClick(activeSlotIdx);
     }
   };
 
@@ -220,7 +214,7 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
           })}
         </div>
 
-        {/* Below the Cards: Write the Card Name and Description */}
+        {/* Below the Cards: Keeps ONLY Card Name, Card Description, and Book a Tarot Session button */}
         <AnimatePresence mode="wait">
           {activeCard && activeSlot && (
             <motion.div
@@ -231,53 +225,26 @@ export const TarotExperience: React.FC<TarotExperienceProps> = ({ onBookClick })
               transition={{ duration: 0.35 }}
               className="mt-8 sm:mt-14 p-5 sm:p-8 rounded-2xl sm:rounded-3xl glass-card border border-secondaryPurple/50 max-w-2xl mx-auto text-center space-y-4 sm:space-y-5 shadow-xl"
             >
-              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-mutedPurple">
-                <span>✦</span>
-                <span>{activeSlot.slotLabel} Revealed • {activeCard.romanNumeral}</span>
-                <span>✦</span>
-              </div>
+              {/* Card Name */}
+              <h3 className="font-editorial text-2xl sm:text-4xl text-brandText font-normal">
+                {activeCard.name}
+              </h3>
 
-              <div className="space-y-1">
-                <h3 className="font-editorial text-2xl sm:text-4xl text-brandText font-normal">
-                  {activeCard.name}
-                </h3>
-                <p className="text-xs sm:text-sm font-medium uppercase tracking-wider text-mutedPurple">
-                  {activeCard.archetype} • {activeCard.element}
-                </p>
-              </div>
-
-              {/* Main Card Description */}
+              {/* Card Description */}
               <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white/80 border border-secondaryPurple/25 shadow-inner">
                 <p className="font-editorial italic text-base sm:text-xl text-brandText leading-relaxed">
                   "{activeCard.reflection}"
                 </p>
               </div>
 
-              {/* Sacred Action Guidance */}
-              {activeCard.actionGuidance && (
-                <p className="text-xs sm:text-sm text-brandLightText leading-relaxed max-w-lg mx-auto">
-                  <strong className="text-brandText font-semibold">Guidance: </strong>
-                  {activeCard.actionGuidance}
-                </p>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
+              {/* Book a Tarot Session Button */}
+              <div className="pt-2 flex justify-center">
                 <button
                   onClick={onBookClick}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-mutedPurple hover:bg-[#9677a5] text-white text-xs font-semibold uppercase tracking-wider shadow-md hover:shadow-lg transition-all"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>Book a Tarot Session</span>
-                </button>
-
-                <button
-                  onClick={handleFlipBack}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-warmBeige hover:bg-lightLavender text-xs font-semibold tracking-wider uppercase text-brandText transition-all border border-secondaryPurple/40 shadow-xs hover:shadow-md active:scale-95"
-                  title="Flip this card back to original side"
-                >
-                  <RotateCcw className="w-3.5 h-3.5 text-mutedPurple" />
-                  <span>Flip Card Back</span>
                 </button>
               </div>
             </motion.div>
