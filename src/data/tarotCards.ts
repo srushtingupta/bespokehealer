@@ -67,6 +67,50 @@ export const tarotDeck: TarotCard[] = [
     cardImage: "/tarot-ace-of-swords.jpg"
   },
   {
+    id: "king-of-wands",
+    name: "King of Wands",
+    romanNumeral: "King",
+    archetype: "Entrepreneurial Spirit & Leadership",
+    reflection: "King of wands - summon your entrepreneurial spirit,make a plan & what you propose will be well received",
+    actionGuidance: "Step boldly into visionary leadership. Formulate your plan and lead with passion.",
+    element: "Fire • Wands",
+    symbol: "⚡",
+    cardImage: "/tarot-king-of-wands.jpg"
+  },
+  {
+    id: "two-of-cups",
+    name: "2 of Cups",
+    romanNumeral: "II",
+    archetype: "New Romance & True Commitment",
+    reflection: "2 of cups - new romance coming your way with a deeper sense of commitment",
+    actionGuidance: "Embrace the reciprocal love and heartfelt understanding blooming in your life.",
+    element: "Water • Cups",
+    symbol: "♡",
+    cardImage: "/tarot-two-of-cups.jpg"
+  },
+  {
+    id: "the-fool",
+    name: "The Fool",
+    romanNumeral: "0",
+    archetype: "Leap of Faith & Infinite Potential",
+    reflection: "The Fool - Take the leap of faith",
+    actionGuidance: "Trust the beginning of a fresh journey. Step forward fearlessly with an open heart.",
+    element: "Air • Major Arcana",
+    symbol: "✦",
+    cardImage: "/tarot-the-fool.jpg"
+  },
+  {
+    id: "four-of-cups",
+    name: "4 of Cups",
+    romanNumeral: "IV",
+    archetype: "Emotional Healing & Inner Clarity",
+    reflection: "4 of cups - you may think you're ready for love, but there may be some past issues still to heal.",
+    actionGuidance: "Allow yourself the gentleness to heal past wounds before opening up to new beginnings.",
+    element: "Water • Cups",
+    symbol: "☾",
+    cardImage: "/tarot-four-of-cups.jpg"
+  },
+  {
     id: "ten-of-cups",
     name: "10 of Cups",
     romanNumeral: "X",
